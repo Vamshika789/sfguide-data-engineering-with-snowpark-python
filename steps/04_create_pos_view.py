@@ -107,7 +107,25 @@ def test_pos_view(session):
 # For local debugging
 if __name__ == "__main__":
     # Create a local Snowpark session
-    with Session.builder.getOrCreate() as session:
-        create_pos_view(session)
-        create_pos_view_stream(session)
-#        test_pos_view(session)
+    from snowflake.snowpark import Session
+
+# Manually provide connection parameters
+connection_parameters = {
+    "account": "al55734.us-east-2.aws",
+    "user": "kiranss777",
+    "password": "Workdaykiran123$",  # ⚠️ Storing passwords in code is risky
+    "role": "HOL_ROLE",
+    "warehouse": "HOL_WH",
+    "database": "HOL_DB",
+    "schema": "HARMONIZED"
+}
+
+# Create a session manually
+with Session.builder.configs(connection_parameters).create() as session:
+    print("✅ Snowpark session created successfully!")
+    
+    # Run the view creation functions
+    create_pos_view(session)
+    create_pos_view_stream(session)
+    # test_pos_view(session)  # Uncomment to test the view
+

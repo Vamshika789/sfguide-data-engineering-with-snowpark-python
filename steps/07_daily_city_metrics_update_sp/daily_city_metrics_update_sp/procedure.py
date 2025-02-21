@@ -4,7 +4,7 @@
 # Author:       Jeremiah Hansen, Caleb Baechtold
 # Last Updated: 1/9/2023
 #------------------------------------------------------------------------------
-
+import os
 import time
 from snowflake.snowpark import Session
 import snowflake.snowpark.types as T
@@ -106,6 +106,33 @@ def main(session: Session) -> str:
 # Be aware you may need to type-convert arguments if you add input parameters
 if __name__ == '__main__':
     # Create a local Snowpark session
+    password = os.getenv("SNOWSQL_PWD")
+
+# Ensure password is not empty
+    if not password:
+        raise ValueError("❌ ERROR: Snowflake password is empty. Set SNOWSQL_PWD in environment variables.")
+
+# Connection Parameters
+    connection_parameters = {
+        "account": "al55734.us-east-2.aws",
+        "user": "kiranss777",
+        "password": password,
+        "role": "HOL_ROLE",
+        "warehouse": "HOL_WH",
+        "database": "HOL_DB",
+        "schema": "ANALYTICS"
+    }
+
+# Create a Snowpark session
+    with Session.builder.configs(connection_parameters).create() as session:
+        print("✅ Connected to Snowflake Successfully!")
+
+        import sys
+        if len(sys.argv) > 1:
+            print(main(session, *sys.argv[1:]))  # type: ignore
+        else:
+            print(main(session))  # type: ignore
+    
     with Session.builder.getOrCreate() as session:
         import sys
         if len(sys.argv) > 1:

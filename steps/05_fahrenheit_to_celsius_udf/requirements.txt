@@ -1,1 +1,4 @@
 snowflake-snowpark-python
+numpy
+pandas
+scipy
