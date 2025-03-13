@@ -1,12 +1,10 @@
 name: Deploy Snowpark Apps
 
-# Controls when the action will run. 
 on:
   push:
     branches:
       - main
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -14,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -23,10 +20,25 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Install Snowflake CLI
+        run: pip install --upgrade snowflake-cli
+
+      - name: Verify Snowflake CLI installation
+        run: snow --help  # Check if Snowflake CLI is installed
+
       - name: Install Python packages
         run: pip install -r requirements.txt
 
-      - name: Deploy Snowpark apps
+      - name: Install Snowpark Python Package
+        run: pip install snowflake-snowpark-python  # Ensure Snowpark Python is installed
+
+      - name: Check Snowflake CLI Version
+        run: snow --version  # Ensure it's the latest version
+
+      - name: Debug Available Snowflake Commands
+        run: snow --help  # List available commands to check if "snowpark" exists
+
+      - name: Deploy Snowpark Apps
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
